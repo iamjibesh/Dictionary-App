@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Mic, Home, Bookmark, Clock, Volume2, VolumeX, Copy, X, Layers, Trash2, Info, ThumbsUp, ThumbsDown, AlertCircle, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight, Star, Moon, Sun, Book } from 'lucide-react';
+import { Search, Mic, Home, Bookmark, Clock, Volume2, VolumeX, Copy, X, Layers, Trash2, Info, ThumbsUp, ThumbsDown, AlertCircle, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight, Star, Moon, Sun, Book, Download } from 'lucide-react';
 import { fetchWord } from './services/dictionaryApi';
 
 const WORDS_OF_THE_DAY = ['serendipity', 'ephemeral', 'luminescent', 'mellifluous', 'eloquent', 'sonder', 'petrichor'];
@@ -16,6 +16,27 @@ function App() {
   const [isListening, setIsListening] = useState(false);
   
   const [meaningTab, setMeaningTab] = useState('definition'); // definition, usage, synonyms
+  
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallPrompt(true);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    setShowInstallPrompt(false);
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+  };
   
   // Theme state
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -610,6 +631,25 @@ function App() {
       {!isMobileWordView && activeTab !== 'flashcards' && (
         <div className="lg:hidden absolute bottom-0 left-0 right-0 bg-white dark:bg-neutral-950 border-t border-gray-200 dark:border-neutral-900 px-6 py-4 flex justify-between items-center z-30 transition-colors duration-300">
            <NavItems />
+        </div>
+      )}
+
+      {/* PWA Install Prompt Banner */}
+      {showInstallPrompt && (
+        <div className="fixed bottom-24 lg:bottom-10 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 shadow-2xl rounded-3xl p-4 flex items-center space-x-4 w-[90%] max-w-sm animate-fade-in transition-colors">
+           <div className="bg-gray-100 dark:bg-neutral-800 p-3 rounded-full text-gray-900 dark:text-white shadow-sm">
+              <Download className="w-6 h-6" />
+           </div>
+           <div className="flex-1">
+              <h4 className="font-bold text-gray-900 dark:text-white text-sm font-serif tracking-wide">Install Dictionary</h4>
+              <p className="text-xs text-gray-500 dark:text-neutral-400">Get quick offline access.</p>
+           </div>
+           <button onClick={handleInstallClick} className="bg-gray-900 dark:bg-white text-white dark:text-black px-5 py-2.5 rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-neutral-200 transition-colors shadow-sm">
+              Install
+           </button>
+           <button onClick={() => setShowInstallPrompt(false)} className="text-gray-400 dark:text-neutral-500 hover:text-gray-900 dark:hover:text-white p-2 ml-1 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors">
+              <X className="w-5 h-5" />
+           </button>
         </div>
       )}
 
