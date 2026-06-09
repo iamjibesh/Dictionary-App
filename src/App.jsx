@@ -217,10 +217,10 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white font-sans flex w-full relative overflow-hidden transition-colors duration-300">
+    <div className="fixed inset-0 bg-white dark:bg-black text-gray-900 dark:text-white font-sans flex w-full overflow-hidden transition-colors duration-300">
 
       {/* Desktop Sidebar Navigation */}
-      <div className="hidden lg:flex flex-col items-center py-10 w-28 bg-gray-50 dark:bg-neutral-950 border-r border-gray-200 dark:border-neutral-900 z-20 shrink-0 shadow-sm h-screen relative transition-colors duration-300">
+      <div className="hidden lg:flex flex-col items-center py-10 w-28 bg-gray-50 dark:bg-neutral-950 border-r border-gray-200 dark:border-neutral-900 z-20 shrink-0 shadow-sm h-full relative transition-colors duration-300">
          <div className="mb-16 text-gray-800 dark:text-white">
            <Book className="w-8 h-8" />
          </div>
@@ -237,7 +237,7 @@ function App() {
       </div>
 
       {/* Left Column (Master List) */}
-      <div className={`w-full lg:w-[400px] xl:w-[450px] flex-col relative bg-gray-50 dark:bg-neutral-950 border-r border-gray-200 dark:border-neutral-900 z-10 shrink-0 h-screen overflow-y-auto pb-24 lg:pb-0 transition-colors duration-300 ${isMobileWordView || activeTab === 'flashcards' ? 'hidden lg:flex' : 'flex'}`}>
+      <div className={`w-full lg:w-[400px] xl:w-[450px] flex-col relative bg-gray-50 dark:bg-neutral-950 border-r border-gray-200 dark:border-neutral-900 z-10 shrink-0 h-full overflow-y-auto pb-24 lg:pb-0 transition-colors duration-300 ${isMobileWordView || activeTab === 'flashcards' ? 'hidden lg:flex' : 'flex'}`}>
         
         {/* Top Header Section */}
         <div className="pt-12 pb-8 px-8 border-b border-gray-200 dark:border-neutral-900">
@@ -413,7 +413,7 @@ function App() {
       </div>
 
       {/* Right Column (Word Details & Flashcards) */}
-      <div className={`flex-1 flex-col relative h-screen bg-white dark:bg-black transition-colors duration-300 ${!isMobileWordView && activeTab !== 'flashcards' ? 'hidden lg:flex' : 'flex'}`}>
+      <div className={`flex-1 flex-col relative h-full bg-white dark:bg-black transition-colors duration-300 ${!isMobileWordView && activeTab !== 'flashcards' ? 'hidden lg:flex' : 'flex'}`}>
         
         {/* Flashcard View (Vibrant Colors) */}
         {activeTab === 'flashcards' && savedWords.length > 0 && (
